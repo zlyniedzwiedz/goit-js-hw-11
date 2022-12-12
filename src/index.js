@@ -39,6 +39,7 @@ async function showPictures(event) {
 
     Notiflix.Notify.warning('Please enter what you want to search for!');
   } else {
+    window.addEventListener('scroll', handleInfiniteScroll);
     backBtn.style.display = 'block';
     fetchPictures(inputSearchValue, page)
       .then(responseData => {
@@ -100,8 +101,8 @@ const loadMore = () => {
       }
       if (picsInArray == 0) {
         removeInfiniteScroll();
-        console.log('no pics in array, removing infinite scroll', picsInArray);
-      }
+        
+      } return;
     })
     .catch(error => console.log(error));
 };
@@ -181,7 +182,7 @@ const throttle = (callback, time) => {
   }, time);
 };
 //
-window.addEventListener('scroll', handleInfiniteScroll);
+
 //commented all buttons activities for infinitescroll to work properly
 
 //smooth scroll
