@@ -4,7 +4,7 @@ import axios from 'axios';
 import Notiflix from 'notiflix';
 import simpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-
+import SmoothScroll from 'smoothscroll-for-websites';
 const searchForm = document.querySelector('form#search-form');
 const inputSearch = document.querySelector("input[name='searchQuery']");
 const gallery = document.querySelector('div.gallery');
@@ -186,3 +186,4 @@ const throttle = (callback, time) => {
 //commented all buttons activities for infinitescroll to work properly
 
 //smooth scroll
+SmoothScroll({ stepSize: 40})
