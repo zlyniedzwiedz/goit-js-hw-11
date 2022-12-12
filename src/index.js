@@ -148,7 +148,11 @@ const galleryBuild = responseData => {
 const goBack = () => {
   let inputSearchValue = inputSearch.value;
 
-  window.scrollTo(0, 0);
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'smooth'
+  });
 };
 backBtn.addEventListener('click', goBack);
 //
