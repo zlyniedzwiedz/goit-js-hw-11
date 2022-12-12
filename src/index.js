@@ -58,11 +58,7 @@ async function showPictures(event) {
           );
           console.log('page:', page);
         }
-
-        const lightbox = new SimpleLightbox('.gallery a', {
-          captionsData: 'alt',
-          captionDelay: 250,
-        });
+        
       })
       .catch(error => console.log(error));
   }
@@ -88,6 +84,7 @@ const loadMore = () => {
         // backBtn.style.display = 'block';
         console.log('page:', page);
         console.log('picsInArray', picsInArray);
+       
         if (page === totalPages) {
           console.log('No more pages');
           removeInfiniteScroll();
@@ -101,8 +98,8 @@ const loadMore = () => {
       }
       if (picsInArray == 0) {
         removeInfiniteScroll();
-        
-      } return;
+      }
+      return;
     })
     .catch(error => console.log(error));
 };
@@ -142,6 +139,12 @@ const galleryBuild = responseData => {
     .join('');
 
   gallery.innerHTML += markup;
+  const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
+  lightbox.refresh();
+  
 };
 
 //go back function
@@ -151,7 +154,7 @@ const goBack = () => {
   window.scrollTo({
     top: 0,
     left: 0,
-    behavior: 'smooth'
+    behavior: 'smooth',
   });
 };
 backBtn.addEventListener('click', goBack);
@@ -190,4 +193,4 @@ const throttle = (callback, time) => {
 //commented all buttons activities for infinitescroll to work properly
 
 //smooth scroll
-SmoothScroll({ stepSize: 40})
+SmoothScroll({ stepSize: 40 });
