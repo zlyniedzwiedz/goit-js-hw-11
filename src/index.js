@@ -35,6 +35,7 @@ async function showPictures(event) {
   console.log('inputSearchValue:', inputSearchValue);
   if (inputSearchValue.length < 1) {
     moreBtn.style.display = 'none';
+    backBtn.style.display = 'none';
 
     Notiflix.Notify.warning('Please enter what you want to look for');
   } else {
