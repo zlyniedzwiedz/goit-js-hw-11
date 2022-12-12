@@ -57,7 +57,7 @@ async function showPictures(event) {
           console.log('page:', page);
           if (page < totalPages) {
             moreBtn.style.display = 'block';
-            backBtn.style.display = 'none';
+            backBtn.style.display = 'block';
           }
         }
 
@@ -141,13 +141,9 @@ const galleryBuild = responseData => {
 //go back function
 const goBack = () => {
   let inputSearchValue = inputSearch.value;
-  
+
   window.scrollTo(0, 0);
-  
-    // page -= 1;
-    // showPictures(event)
-  
- 
+
   
 };
 backBtn.addEventListener('click', goBack);
