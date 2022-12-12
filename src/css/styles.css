@@ -30,6 +30,7 @@ margin-top: 80px;
 }
 
 .load-more {
+  
   margin-left: auto;
   margin-right: auto;
   background-color: rgb(124, 166, 230);
@@ -44,7 +45,7 @@ margin-top: 80px;
   transform: scale(1.08);
 }
 .go-back {
-  display: none;
+  
   background-color: rgb(124, 166, 230);
   border: none;
   height: 30px;

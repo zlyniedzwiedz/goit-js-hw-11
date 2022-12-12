@@ -18,7 +18,7 @@ async function fetchPictures(inputSearchValue, page) {
     const response = await axios.get(
       `https://pixabay.com/api/?key=${API_KEY}&q=${inputSearchValue}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${page}`
     );
-
+    
     return response.data;
   } catch (error) {
     console.log('fetch error:', error.message);
@@ -34,8 +34,8 @@ async function showPictures(event) {
 
   console.log('inputSearchValue:', inputSearchValue);
   if (inputSearchValue.length < 1) {
-    moreBtn.style.display = 'none';
-    backBtn.style.display = 'none';
+    // moreBtn.style.display = 'none';
+    // backBtn.style.display = 'none';
 
     Notiflix.Notify.warning('Please enter what you want to search for!');
   } else {
@@ -56,8 +56,8 @@ async function showPictures(event) {
           );
           console.log('page:', page);
           if (page < totalPages) {
-            moreBtn.style.display = 'block';
-            backBtn.style.display = 'block';
+            // moreBtn.style.display = 'block';
+            // backBtn.style.display = 'block';
           }
         }
 
@@ -71,29 +71,31 @@ async function showPictures(event) {
 }
 
 const loadMore = () => {
-  moreBtn.style.display = 'none';
-  backBtn.style.display = 'none';
+//   moreBtn.style.display = 'none';
+//   backBtn.style.display = 'none';
   let inputSearchValue = inputSearch.value;
   page += 1;
   fetchPictures(inputSearchValue, page)
     .then(responseData => {
       galleryBuild(responseData);
-      moreBtn.style.display = 'block';
-      backBtn.style.display = 'block';
+    //   moreBtn.style.display = 'block';
+    //   backBtn.style.display = 'block';
       const totalPages = Math.ceil(responseData.totalHits / perPage);
       let picsInArray = responseData.hits.length;
       console.log('picsInArray', picsInArray);
 
       if (picsInArray > 0) {
         galleryBuild(responseData);
-        moreBtn.style.display = 'block';
-        backBtn.style.display = 'block';
+        // moreBtn.style.display = 'block';
+        // backBtn.style.display = 'block';
         console.log('page:', page);
 
         if (page === totalPages) {
           console.log('No more pages');
-          moreBtn.style.display = 'none';
-          backBtn.style.display = 'block';
+          removeInfiniteScroll();
+          backBtn.style.display = "block"
+        //   moreBtn.style.display = 'none';
+        //   backBtn.style.display = 'block';
           Notiflix.Notify.warning(
             "We're sorry, but you've reached the end of search results."
           );
@@ -107,6 +109,7 @@ searchForm.addEventListener('submit', showPictures);
 moreBtn.addEventListener('click', loadMore);
 
 moreBtn.style.display = 'none';
+backBtn.style.display = 'none';
 
 const API_KEY = '32017206-7eec6bebfecae194d1479b789';
 
@@ -147,5 +150,38 @@ const goBack = () => {
   
 };
 backBtn.addEventListener('click', goBack);
+//
+//infinitescroll
+const removeInfiniteScroll = () => {
+    
+    window.removeEventListener("scroll", handleInfiniteScroll);
+  };
+const handleInfiniteScroll = () => {
+    throttle(() => {
+      const endOfPage =
+        window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
+        
+      if (endOfPage) {
+        loadMore();
+      } 
+    }, 500);
+  };
+  //
+//throttle 
+let throttleTimer;
+ 
+const throttle = (callback, time) => {
+  if (throttleTimer) return;
+ 
+  throttleTimer = true;
+ 
+  setTimeout(() => {
+    callback();
+    throttleTimer = false;
+  }, time);
+};
+//
+window.addEventListener("scroll", handleInfiniteScroll)
 
-//trying to get infinitescroll to work 
+
+//commented all buttons activities for infinitescroll to work properly
