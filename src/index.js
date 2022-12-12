@@ -58,7 +58,6 @@ async function showPictures(event) {
           );
           console.log('page:', page);
         }
-        
       })
       .catch(error => console.log(error));
   }
@@ -84,8 +83,9 @@ const loadMore = () => {
         // backBtn.style.display = 'block';
         console.log('page:', page);
         console.log('picsInArray', picsInArray);
-       
+
         if (page === totalPages) {
+          galleryBuild(responseData);
           console.log('No more pages');
           removeInfiniteScroll();
           console.log('picsInArray', picsInArray);
@@ -139,12 +139,12 @@ const galleryBuild = responseData => {
     .join('');
 
   gallery.innerHTML += markup;
+  
   const lightbox = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: 250,
   });
   lightbox.refresh();
-  
 };
 
 //go back function
