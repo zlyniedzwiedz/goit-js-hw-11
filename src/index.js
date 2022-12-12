@@ -80,24 +80,27 @@ const loadMore = () => {
       //   backBtn.style.display = 'block';
       const totalPages = Math.ceil(responseData.totalHits / perPage);
       let picsInArray = responseData.hits.length;
-      console.log('picsInArray', picsInArray);
 
       if (picsInArray > 0) {
         galleryBuild(responseData);
         // moreBtn.style.display = 'block';
         // backBtn.style.display = 'block';
         console.log('page:', page);
-
+        console.log('picsInArray', picsInArray);
         if (page === totalPages) {
           console.log('No more pages');
           removeInfiniteScroll();
-
+          console.log('picsInArray', picsInArray);
           //   moreBtn.style.display = 'none';
           backBtn.style.display = 'block';
           Notiflix.Notify.warning(
             "We're sorry, but you've reached the end of search results."
           );
         }
+      }
+      if (picsInArray == 0) {
+        removeInfiniteScroll();
+        console.log('no pics in array, removing infinite scroll', picsInArray);
       }
     })
     .catch(error => console.log(error));
@@ -161,7 +164,7 @@ const handleInfiniteScroll = () => {
     if (endOfPage) {
       loadMore();
     }
-  }, 500);
+  }, 1000);
 };
 //
 //throttle
