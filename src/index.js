@@ -37,7 +37,7 @@ async function showPictures(event) {
     moreBtn.style.display = 'none';
     backBtn.style.display = 'none';
 
-    Notiflix.Notify.warning('Please enter what you want to look for');
+    Notiflix.Notify.warning('Please enter what you want to search for!');
   } else {
     fetchPictures(inputSearchValue, page)
       .then(responseData => {
@@ -147,3 +147,5 @@ const goBack = () => {
   
 };
 backBtn.addEventListener('click', goBack);
+
+//trying to get infinitescroll to work 
