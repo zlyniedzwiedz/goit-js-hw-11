@@ -75,12 +75,11 @@ const loadMore = () => {
   backBtn.style.display = 'none';
   let inputSearchValue = inputSearch.value;
   page += 1;
-  window.scrollTo(0, 0);
   fetchPictures(inputSearchValue, page)
     .then(responseData => {
       galleryBuild(responseData);
       moreBtn.style.display = 'block';
-      backBtn.style.display = 'none';
+      backBtn.style.display = 'block';
       const totalPages = Math.ceil(responseData.totalHits / perPage);
       let picsInArray = responseData.hits.length;
       console.log('picsInArray', picsInArray);
@@ -88,7 +87,7 @@ const loadMore = () => {
       if (picsInArray > 0) {
         galleryBuild(responseData);
         moreBtn.style.display = 'block';
-        backBtn.style.display = 'none';
+        backBtn.style.display = 'block';
         console.log('page:', page);
 
         if (page === totalPages) {
@@ -111,8 +110,8 @@ moreBtn.style.display = 'none';
 
 const API_KEY = '32017206-7eec6bebfecae194d1479b789';
 
-const galleryBuild = respData => {
-  const markup = respData.hits
+const galleryBuild = responseData => {
+  const markup = responseData.hits
     .map(
       hit =>
         `<div class="photo-card gallery__item">
@@ -137,7 +136,7 @@ const galleryBuild = respData => {
     )
     .join('');
 
-  gallery.innerHTML = markup;
+  gallery.innerHTML += markup;
 };
 //go back function
 const goBack = () => {
@@ -145,8 +144,8 @@ const goBack = () => {
   
   window.scrollTo(0, 0);
   
-    page -= 1;
-    showPictures(event)
+    // page -= 1;
+    // showPictures(event)
   
  
   
