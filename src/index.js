@@ -12,19 +12,19 @@ const moreBtn = document.querySelector('.load-more');
 const backBtn = document.querySelector('.go-back');
 let perPage = 40;
 let page = 0;
-
+//data fetch
 async function fetchPictures(inputSearchValue, page) {
   try {
     const response = await axios.get(
       `https://pixabay.com/api/?key=${API_KEY}&q=${inputSearchValue}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${page}`
     );
-    
+
     return response.data;
   } catch (error) {
     console.log('fetch error:', error.message);
   }
 }
-
+//displaying content
 async function showPictures(event) {
   event.preventDefault();
   gallery.innerHTML = '';
@@ -39,6 +39,7 @@ async function showPictures(event) {
 
     Notiflix.Notify.warning('Please enter what you want to search for!');
   } else {
+    backBtn.style.display = 'block';
     fetchPictures(inputSearchValue, page)
       .then(responseData => {
         let picsInArray = responseData.hits.length;
@@ -55,10 +56,6 @@ async function showPictures(event) {
             `Hooray! We found ${responseData.totalHits} images.`
           );
           console.log('page:', page);
-          if (page < totalPages) {
-            // moreBtn.style.display = 'block';
-            // backBtn.style.display = 'block';
-          }
         }
 
         const lightbox = new SimpleLightbox('.gallery a', {
@@ -69,17 +66,18 @@ async function showPictures(event) {
       .catch(error => console.log(error));
   }
 }
-
+//loading more content
 const loadMore = () => {
-//   moreBtn.style.display = 'none';
-//   backBtn.style.display = 'none';
+  //   moreBtn.style.display = 'none';
+  //   backBtn.style.display = 'none';
   let inputSearchValue = inputSearch.value;
   page += 1;
+
   fetchPictures(inputSearchValue, page)
     .then(responseData => {
       galleryBuild(responseData);
-    //   moreBtn.style.display = 'block';
-    //   backBtn.style.display = 'block';
+      //   moreBtn.style.display = 'block';
+      //   backBtn.style.display = 'block';
       const totalPages = Math.ceil(responseData.totalHits / perPage);
       let picsInArray = responseData.hits.length;
       console.log('picsInArray', picsInArray);
@@ -93,9 +91,9 @@ const loadMore = () => {
         if (page === totalPages) {
           console.log('No more pages');
           removeInfiniteScroll();
-          backBtn.style.display = "block"
-        //   moreBtn.style.display = 'none';
-        //   backBtn.style.display = 'block';
+
+          //   moreBtn.style.display = 'none';
+          backBtn.style.display = 'block';
           Notiflix.Notify.warning(
             "We're sorry, but you've reached the end of search results."
           );
@@ -110,9 +108,9 @@ moreBtn.addEventListener('click', loadMore);
 
 moreBtn.style.display = 'none';
 backBtn.style.display = 'none';
-
+//Pixabay API
 const API_KEY = '32017206-7eec6bebfecae194d1479b789';
-
+//html build
 const galleryBuild = responseData => {
   const markup = responseData.hits
     .map(
@@ -141,47 +139,46 @@ const galleryBuild = responseData => {
 
   gallery.innerHTML += markup;
 };
+
 //go back function
 const goBack = () => {
   let inputSearchValue = inputSearch.value;
 
   window.scrollTo(0, 0);
-
-  
 };
 backBtn.addEventListener('click', goBack);
 //
-//infinitescroll
+//infinitescroll remove
 const removeInfiniteScroll = () => {
-    
-    window.removeEventListener("scroll", handleInfiniteScroll);
-  };
+  window.removeEventListener('scroll', handleInfiniteScroll);
+};
+//infinite scroll
 const handleInfiniteScroll = () => {
-    throttle(() => {
-      const endOfPage =
-        window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
-        
-      if (endOfPage) {
-        loadMore();
-      } 
-    }, 500);
-  };
-  //
-//throttle 
+  throttle(() => {
+    const endOfPage =
+      window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
+
+    if (endOfPage) {
+      loadMore();
+    }
+  }, 500);
+};
+//
+//throttle
 let throttleTimer;
- 
+
 const throttle = (callback, time) => {
   if (throttleTimer) return;
- 
+
   throttleTimer = true;
- 
+
   setTimeout(() => {
     callback();
     throttleTimer = false;
   }, time);
 };
 //
-window.addEventListener("scroll", handleInfiniteScroll)
-
-
+window.addEventListener('scroll', handleInfiniteScroll);
 //commented all buttons activities for infinitescroll to work properly
+
+//smooth scroll
