@@ -41,8 +41,7 @@ async function showPictures(event) {
 
   console.log('inputSearchValue:', inputSearchValue);
   if (inputSearchValue.length < 1) {
-    // moreBtn.style.display = 'none';
-    // backBtn.style.display = 'none';
+    
 
     Notiflix.Notify.warning('Please enter what you want to search for!');
   } else {
@@ -70,10 +69,10 @@ async function showPictures(event) {
       .catch(error => console.log(error));
   }
 }
+
 //loading more content
 const loadMore = () => {
-  //   moreBtn.style.display = 'none';
-  //   backBtn.style.display = 'none';
+  
   let inputSearchValue = inputSearch.value;
   page += 1;
 
@@ -81,26 +80,23 @@ const loadMore = () => {
     .then(responseData => {
       
      
-      //   moreBtn.style.display = 'block';
-      //   backBtn.style.display = 'block';
+      
       const totalPages = Math.ceil(responseData.totalHits / perPage);
       let picsInArray = responseData.hits.length;
 
       if (picsInArray > 0) {
         galleryBuild(responseData);
         lightbox.refresh();
-        // moreBtn.style.display = 'block';
-        // backBtn.style.display = 'block';
+       
         console.log('page:', page);
         console.log('picsInArray', picsInArray);
 
         if (page === totalPages) {
           
-          lightbox.refresh();
-          console.log('No more pages');
+         console.log('No more pages');
           removeInfiniteScroll();
           console.log('picsInArray', picsInArray);
-          //   moreBtn.style.display = 'none';
+          
           backBtn.style.display = 'block';
           Notiflix.Notify.warning(
             "We're sorry, but you've reached the end of search results."
@@ -120,8 +116,10 @@ moreBtn.addEventListener('click', loadMore);
 
 moreBtn.style.display = 'none';
 backBtn.style.display = 'none';
+
 //Pixabay API
 const API_KEY = '32017206-7eec6bebfecae194d1479b789';
+
 //html build
 const galleryBuild = responseData => {
   const markup = responseData.hits
@@ -165,11 +163,13 @@ const goBack = () => {
   });
 };
 backBtn.addEventListener('click', goBack);
-//
+
+
 //infinitescroll remove
 const removeInfiniteScroll = () => {
   window.removeEventListener('scroll', handleInfiniteScroll);
 };
+
 //infinite scroll
 const handleInfiniteScroll = () => {
   throttle(() => {
@@ -181,7 +181,7 @@ const handleInfiniteScroll = () => {
     }
   }, 1000);
 };
-//
+
 //throttle
 let throttleTimer;
 
@@ -195,9 +195,7 @@ const throttle = (callback, time) => {
     throttleTimer = false;
   }, time);
 };
-//
 
-//commented all buttons activities for infinitescroll to work properly
 
 //smooth scroll
 SmoothScroll({ stepSize: 40 });
