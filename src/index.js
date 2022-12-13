@@ -79,8 +79,8 @@ const loadMore = () => {
 
   fetchPictures(inputSearchValue, page)
     .then(responseData => {
-      galleryBuild(responseData);
-      lightbox.refresh();
+      
+     
       //   moreBtn.style.display = 'block';
       //   backBtn.style.display = 'block';
       const totalPages = Math.ceil(responseData.totalHits / perPage);
@@ -95,7 +95,7 @@ const loadMore = () => {
         console.log('picsInArray', picsInArray);
 
         if (page === totalPages) {
-          galleryBuild(responseData);
+          
           lightbox.refresh();
           console.log('No more pages');
           removeInfiniteScroll();
