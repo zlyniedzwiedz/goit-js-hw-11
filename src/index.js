@@ -5,6 +5,7 @@ import Notiflix from 'notiflix';
 import simpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import SmoothScroll from 'smoothscroll-for-websites';
+
 const searchForm = document.querySelector('form#search-form');
 const inputSearch = document.querySelector("input[name='searchQuery']");
 const gallery = document.querySelector('div.gallery');
@@ -12,6 +13,12 @@ const moreBtn = document.querySelector('.load-more');
 const backBtn = document.querySelector('.go-back');
 let perPage = 40;
 let page = 0;
+
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
 //data fetch
 async function fetchPictures(inputSearchValue, page) {
   try {
@@ -53,6 +60,7 @@ async function showPictures(event) {
           );
         } else {
           galleryBuild(responseData);
+          lightbox.refresh();
           Notiflix.Notify.success(
             `Hooray! We found ${responseData.totalHits} images.`
           );
@@ -72,6 +80,7 @@ const loadMore = () => {
   fetchPictures(inputSearchValue, page)
     .then(responseData => {
       galleryBuild(responseData);
+      lightbox.refresh();
       //   moreBtn.style.display = 'block';
       //   backBtn.style.display = 'block';
       const totalPages = Math.ceil(responseData.totalHits / perPage);
@@ -79,6 +88,7 @@ const loadMore = () => {
 
       if (picsInArray > 0) {
         galleryBuild(responseData);
+        lightbox.refresh();
         // moreBtn.style.display = 'block';
         // backBtn.style.display = 'block';
         console.log('page:', page);
@@ -86,6 +96,7 @@ const loadMore = () => {
 
         if (page === totalPages) {
           galleryBuild(responseData);
+          lightbox.refresh();
           console.log('No more pages');
           removeInfiniteScroll();
           console.log('picsInArray', picsInArray);
@@ -138,13 +149,9 @@ const galleryBuild = responseData => {
     )
     .join('');
 
-  gallery.insertAdjacentHTML("beforeend", markup)
+  gallery.insertAdjacentHTML('beforeend', markup);
+
   
-  const lightbox = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-  });
-  lightbox.refresh();
 };
 
 //go back function
