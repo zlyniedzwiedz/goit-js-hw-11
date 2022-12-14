@@ -5,18 +5,22 @@ import Notiflix from 'notiflix';
 import simpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import SmoothScroll from 'smoothscroll-for-websites';
+const debounce = require('lodash.debounce');
 
 const searchForm = document.querySelector('form#search-form');
 const inputSearch = document.querySelector("input[name='searchQuery']");
 const gallery = document.querySelector('div.gallery');
 const moreBtn = document.querySelector('.load-more');
 const backBtn = document.querySelector('.go-back');
+const settingsBtn = document.querySelector('.moreSetting');
+
 let perPage = 40;
 let page = 0;
-
+let totalPages = 0;
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
+  scrollZoom: false,
 });
 
 //data fetch
@@ -36,17 +40,14 @@ async function showPictures(event) {
   event.preventDefault();
   gallery.innerHTML = '';
   page = 1;
-
   let inputSearchValue = inputSearch.value;
 
   console.log('inputSearchValue:', inputSearchValue);
   if (inputSearchValue.length < 1) {
-    
-
     Notiflix.Notify.warning('Please enter what you want to search for!');
   } else {
     window.addEventListener('scroll', handleInfiniteScroll);
-    backBtn.style.display = 'block';
+    backBtn.style.display = 'none';
     fetchPictures(inputSearchValue, page)
       .then(responseData => {
         let picsInArray = responseData.hits.length;
@@ -72,31 +73,26 @@ async function showPictures(event) {
 
 //loading more content
 const loadMore = () => {
-  
   let inputSearchValue = inputSearch.value;
   page += 1;
 
   fetchPictures(inputSearchValue, page)
     .then(responseData => {
-      
-     
-      
       const totalPages = Math.ceil(responseData.totalHits / perPage);
       let picsInArray = responseData.hits.length;
 
       if (picsInArray > 0) {
         galleryBuild(responseData);
         lightbox.refresh();
-       
+
         console.log('page:', page);
         console.log('picsInArray', picsInArray);
 
         if (page === totalPages) {
-          
-         console.log('No more pages');
+          console.log('No more pages');
           removeInfiniteScroll();
           console.log('picsInArray', picsInArray);
-          
+          moreBtn.classList.add('is-hidden');
           backBtn.style.display = 'block';
           Notiflix.Notify.warning(
             "We're sorry, but you've reached the end of search results."
@@ -111,11 +107,8 @@ const loadMore = () => {
     .catch(error => console.log(error));
 };
 
-searchForm.addEventListener('submit', showPictures);
+searchForm.addEventListener('input', debounce(showPictures, 500));
 moreBtn.addEventListener('click', loadMore);
-
-moreBtn.style.display = 'none';
-backBtn.style.display = 'none';
 
 //Pixabay API
 const API_KEY = '32017206-7eec6bebfecae194d1479b789';
@@ -126,10 +119,11 @@ const galleryBuild = responseData => {
     .map(
       hit =>
         `<div class="photo-card gallery__item">
+        <figure>
         <a class="gallery__link" href=${hit.largeImageURL}>
       <img class="gallery__image" src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy" />
       </a>
-      <div class="info">
+      <figcaption class="info">
       <p class="info-item">
       <b>Likes</b> ${hit.likes}
       </p>
@@ -142,28 +136,25 @@ const galleryBuild = responseData => {
       <p class="info-item">
       <b>Downloads</b> ${hit.downloads}
       </p>
-      </div>
+      </figcaption>
+      </figure>
       </div>`
     )
     .join('');
 
   gallery.insertAdjacentHTML('beforeend', markup);
-
-  
 };
 
 //go back function
-const goBack = () => {
+const goBack = event => {
   let inputSearchValue = inputSearch.value;
-
+  event.preventDefault();
   window.scrollTo({
     top: 0,
-    left: 0,
     behavior: 'smooth',
   });
 };
 backBtn.addEventListener('click', goBack);
-
 
 //infinitescroll remove
 const removeInfiniteScroll = () => {
@@ -196,6 +187,37 @@ const throttle = (callback, time) => {
   }, time);
 };
 
-
 //smooth scroll
 SmoothScroll({ stepSize: 40 });
+
+//back to top
+window.onscroll = () => {
+  backToTop();
+};
+function backToTop() {
+  if (
+    document.body.scrollTop > 150 ||
+    document.documentElement.scrollTop > 150
+  ) {
+    backBtn.style.display = 'block';
+  } else {
+    backBtn.style.display = 'none';
+  }
+}
+const settingsSwitch = () => {
+  moreBtn.classList.toggle('is-hidden');
+  removeInfiniteScroll();
+  if (page === totalPages) {
+    moreBtn.classList.add('is-hidden');
+    return;
+  }
+
+  if (moreBtn.classList.contains('is-hidden')) {
+    settingsBtn.innerHTML = 'Current loading mode: Scrolling';
+    window.addEventListener('scroll', handleInfiniteScroll);
+  } else {
+    settingsBtn.innerHTML = 'Current loading mode: More Button';
+  }
+};
+
+settingsBtn.addEventListener('click', settingsSwitch);

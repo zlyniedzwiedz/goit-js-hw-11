@@ -6,24 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Homework 11</title>
   </head>
-  <body>
+  <b>
     <form class="search-form" id="search-form">
+      
       <input
         type="text"
         name="searchQuery"
         autocomplete="off"
         placeholder="Search images..."
       />
-      <button type="submit">Search</button>
+      <button type="submit" class="search">Search</button>
     </form>
+    <button type="button" class="moreSetting">Current loading mode: Scrolling</button>
+    <div class="gallery"></div>
 
-    <div class="gallery">
-     
-    </div>
-    <div class="button-group">
-      <button type="button" class="go-back">Go back to the top</button>
-      <button type="button" class="load-more">Load more</button>
-    </div>
+    <button type="button" class="go-back">
+      <svg width="24" height="24" xmlns='http: //www.w3.org/2000/svg' stroke="white" stroke-width="3">
+        <path
+          d="M11 2.206l-6.235 7.528-.765-.645 7.521-9 7.479 9-.764.646-6.236-7.53v21.884h-1v-21.883z"
+        />
+      </svg>
+    </button>
+    <button type="button" class="load-more is-hidden">Load more Pictures</button>
+
     <script src="index.js" type="module"></script>
   </body>
 </html>
