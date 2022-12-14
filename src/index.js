@@ -17,6 +17,8 @@ const settingsBtn = document.querySelector('.moreSetting');
 let perPage = 40;
 let page = 0;
 let totalPages = 0;
+let buttonState = false;
+
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
@@ -29,7 +31,6 @@ async function fetchPictures(inputSearchValue, page) {
     const response = await axios.get(
       `https://pixabay.com/api/?key=${API_KEY}&q=${inputSearchValue}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${page}`
     );
-
     return response.data;
   } catch (error) {
     console.log('fetch error:', error.message);
@@ -41,30 +42,36 @@ async function showPictures(event) {
   gallery.innerHTML = '';
   page = 1;
   let inputSearchValue = inputSearch.value;
+  if (inputSearchValue === '') {
+    page = 0;
+    totalPages = 0;
+    moreBtn.classList.add('is-hidden');
+    return;
+  }
 
-  console.log('inputSearchValue:', inputSearchValue);
   if (inputSearchValue.length < 1) {
     Notiflix.Notify.warning('Please enter what you want to search for!');
   } else {
-    window.addEventListener('scroll', handleInfiniteScroll);
-    backBtn.style.display = 'none';
     fetchPictures(inputSearchValue, page)
       .then(responseData => {
         let picsInArray = responseData.hits.length;
 
-        const totalPages = Math.ceil(responseData.totalHits / perPage);
-        console.log('totalPages:', totalPages);
+        totalPages = Math.ceil(responseData.totalHits / perPage);
         if (picsInArray === 0) {
           Notiflix.Notify.warning(
             'Sorry, there are no images matching your search query. Please try again.'
           );
+          moreBtn.classList.add('is-hidden')
+          page = 0;
+          totalPages = 0;
         } else {
           galleryBuild(responseData);
           lightbox.refresh();
+          settingsCheck();
+          console.log(`Page: ${page} z ${totalPages}`);
           Notiflix.Notify.success(
             `Hooray! We found ${responseData.totalHits} images.`
           );
-          console.log('page:', page);
         }
       })
       .catch(error => console.log(error));
@@ -74,26 +81,26 @@ async function showPictures(event) {
 //loading more content
 const loadMore = () => {
   let inputSearchValue = inputSearch.value;
+  if (inputSearchValue === '') {
+    return;
+  }
   page += 1;
 
   fetchPictures(inputSearchValue, page)
     .then(responseData => {
-      const totalPages = Math.ceil(responseData.totalHits / perPage);
+      // totalPages = Math.ceil(responseData.totalHits / perPage);
       let picsInArray = responseData.hits.length;
 
       if (picsInArray > 0) {
         galleryBuild(responseData);
         lightbox.refresh();
-
-        console.log('page:', page);
-        console.log('picsInArray', picsInArray);
-
+        console.log(`Page: ${page} z ${totalPages}`);
         if (page === totalPages) {
           console.log('No more pages');
           removeInfiniteScroll();
-          console.log('picsInArray', picsInArray);
+
           moreBtn.classList.add('is-hidden');
-          backBtn.style.display = 'block';
+
           Notiflix.Notify.warning(
             "We're sorry, but you've reached the end of search results."
           );
@@ -147,7 +154,6 @@ const galleryBuild = responseData => {
 
 //go back function
 const goBack = event => {
-  let inputSearchValue = inputSearch.value;
   event.preventDefault();
   window.scrollTo({
     top: 0,
@@ -166,13 +172,14 @@ const handleInfiniteScroll = () => {
   throttle(() => {
     const endOfPage =
       window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
-
-    if (endOfPage) {
-      loadMore();
+    if (page != totalPages) {
+      if (endOfPage) {
+        loadMore();
+      }
     }
   }, 1000);
 };
-
+window.addEventListener('scroll', handleInfiniteScroll);
 //throttle
 let throttleTimer;
 
@@ -204,20 +211,25 @@ function backToTop() {
     backBtn.style.display = 'none';
   }
 }
-const settingsSwitch = () => {
-  moreBtn.classList.toggle('is-hidden');
-  removeInfiniteScroll();
-  if (page === totalPages) {
+const settingsCheck = () => {
+  if (buttonState === false) {
     moreBtn.classList.add('is-hidden');
-    return;
+    handleInfiniteScroll();
   }
-
-  if (moreBtn.classList.contains('is-hidden')) {
-    settingsBtn.innerHTML = 'Current loading mode: Scrolling';
-    window.addEventListener('scroll', handleInfiniteScroll);
-  } else {
-    settingsBtn.innerHTML = 'Current loading mode: More Button';
+  if (buttonState === true) {
+    if (page != totalPages) {
+      moreBtn.classList.remove('is-hidden');
+      removeInfiniteScroll();
+    }
   }
+};
+const settingsSwitch = () => {
+  
+  buttonState = !buttonState;
+  settingsBtn.innerHTML = buttonState
+    ? 'Current loading mode: More Button'
+    : 'Current loading mode: Scrolling';
+  settingsCheck();
 };
 
 settingsBtn.addEventListener('click', settingsSwitch);
