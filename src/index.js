@@ -61,7 +61,7 @@ async function showPictures(event) {
           Notiflix.Notify.warning(
             'Sorry, there are no images matching your search query. Please try again.'
           );
-          moreBtn.classList.add('is-hidden')
+          moreBtn.classList.add('is-hidden');
           page = 0;
           totalPages = 0;
         } else {
@@ -94,6 +94,14 @@ const loadMore = () => {
       if (picsInArray > 0) {
         galleryBuild(responseData);
         lightbox.refresh();
+        const { height: cardHeight } = document
+          .querySelector('.gallery')
+          .firstElementChild.getBoundingClientRect();
+
+        window.scrollBy({
+          top: cardHeight * 2.75,
+          behavior: 'smooth',
+        });
         console.log(`Page: ${page} z ${totalPages}`);
         if (page === totalPages) {
           console.log('No more pages');
@@ -224,7 +232,6 @@ const settingsCheck = () => {
   }
 };
 const settingsSwitch = () => {
-  
   buttonState = !buttonState;
   settingsBtn.innerHTML = buttonState
     ? 'Current loading mode: More Button'
