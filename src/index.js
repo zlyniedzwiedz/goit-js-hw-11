@@ -94,14 +94,25 @@ const loadMore = () => {
       if (picsInArray > 0) {
         galleryBuild(responseData);
         lightbox.refresh();
-        const { height: cardHeight } = document
-          .querySelector('.gallery')
-          .firstElementChild.getBoundingClientRect();
+        if (buttonState === false) {
+          const { height: cardHeight } = document
+            .querySelector('.gallery')
+            .firstElementChild.getBoundingClientRect();
 
-        window.scrollBy({
-          top: cardHeight * 2.5,
-          behavior: 'smooth',
-        });
+          window.scrollBy({
+            top: cardHeight * 2.75,
+            behavior: 'smooth',
+          });
+        } else {
+          const { height: cardHeight } = document
+            .querySelector('.gallery')
+            .firstElementChild.getBoundingClientRect();
+          window.scrollBy({
+            top: cardHeight * 2.5,
+            behavior: 'smooth',
+          });
+        }
+
         console.log(`Page: ${page} z ${totalPages}`);
         if (page === totalPages) {
           console.log('No more pages');
