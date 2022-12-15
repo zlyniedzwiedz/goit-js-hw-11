@@ -99,7 +99,7 @@ const loadMore = () => {
           .firstElementChild.getBoundingClientRect();
 
         window.scrollBy({
-          top: cardHeight * 2.75,
+          top: cardHeight * 2.5,
           behavior: 'smooth',
         });
         console.log(`Page: ${page} z ${totalPages}`);
