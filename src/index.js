@@ -25,6 +25,13 @@ const lightbox = new SimpleLightbox('.gallery a', {
   scrollZoom: false,
 });
 
+inputSearch.addEventListener('keypress', function (event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+  }
+});
+
+
 //data fetch
 async function fetchPictures(inputSearchValue, page) {
   try {
@@ -43,6 +50,7 @@ async function showPictures(event) {
   page = 1;
   let inputSearchValue = inputSearch.value;
   if (inputSearchValue === '') {
+    preventDefault();
     page = 0;
     totalPages = 0;
     moreBtn.classList.add('is-hidden');
@@ -72,6 +80,9 @@ async function showPictures(event) {
           Notiflix.Notify.success(
             `Hooray! We found ${responseData.totalHits} images.`
           );
+        }
+        if (page === totalPages) {
+          moreBtn.classList.add('is-hidden');
         }
       })
       .catch(error => console.log(error));
