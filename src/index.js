@@ -31,7 +31,6 @@ inputSearch.addEventListener('keypress', function (event) {
   }
 });
 
-
 //data fetch
 async function fetchPictures(inputSearchValue, page) {
   try {
@@ -50,7 +49,7 @@ async function showPictures(event) {
   page = 1;
   let inputSearchValue = inputSearch.value;
   if (inputSearchValue === '') {
-    preventDefault();
+    event.preventDefault();
     page = 0;
     totalPages = 0;
     moreBtn.classList.add('is-hidden');
